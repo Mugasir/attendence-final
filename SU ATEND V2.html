@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SU Attend</title>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body style="margin:0;">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useCallback } = React;
+
+    // ═══════════════════════════════════════════════════════════════
+    // STUDENT REGISTRY — 73 REAL STUDENTS FROM OFFICIAL RECORDS
+    // ═══════════════════════════════════════════════════════════════
+    const REGISTRY = [
+      {id:"25/08/BIT/U/0001",name:"Kibazo Marvin",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0002",name:"Kangume Ruth Ann",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0003",name:"Donnel Sheena M J",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0004",name:"Kanyago Florence",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0005",name:"Tumuhimbise Ronald",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0006",name:"Kizibaziba Maria Eva",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0007",name:"Mukose Reagan",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0008",name:"Kirabo Shivan",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0009",name:"Namulondo Doreen Kawuba",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0010",name:"Kairu Derrick",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0011",name:"Nagawa Shadia",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0012",name:"Wanjiku Nakintu Nuluart",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0013",name:"Vivian Favour Kirabo",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0014",name:"Kalule Haddaadi",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0015",name:"Nalubanga Lucia Rita",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0016",name:"Muzira Cedric Mathias",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0017",name:"Rwakitarare Lenient Tukamushaba",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0018",name:"Nansamba Rehema",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0019",name:"Kalungi Farouq",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0020",name:"Namuliira Gloria",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0021",name:"Wasike Reagan",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0022",name:"Ssengendo David",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0023",name:"Namukana Naomi",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0024",name:"Nyanzi Samuel",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0025",name:"Malingha Louis",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0026",name:"Patwe Derick",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0027",name:"Ngobi Julius",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0028",name:"Naggoye Betty",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0029",name:"Naiga Dianah",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0030",name:"Tumusiime James",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0031",name:"Nalubega Hafisah",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0032",name:"Nangobi Shirat",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0033",name:"Tutu Melchizedek",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0034",name:"Kiggundu Joshua",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0035",name:"Niringiyimana Johnson",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0036",name:"Kaboggoza Micheal",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0037",name:"Nakasinde Swafurah",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0038",name:"Sebuufu Yusuf",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0039",name:"Muwanguzi Kalungi Lytone",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0040",name:"Nabintu Carolyne",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0041",name:"Mbaadi Salim",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0042",name:"Sebutinde Frank",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0043",name:"Namisango Patricia Kisakye",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BIT/U/0044",name:"Muwanguzi Musa",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0001",name:"Canwat Simon Peter",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0002",name:"Mwebaze Jesse",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0003",name:"Mayinja Grace Benedict",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0004",name:"Akatuhamiza Robinson",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0005",name:"Busi Mark Kevin",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0006",name:"Musimirwe Ben Mark",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0007",name:"Mukeba Hudaiyah",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0008",name:"Wasswa Patrick Lukwago",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0009",name:"Kyamagero Mercy",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0010",name:"Atuhaire Judith",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0011",name:"Adengu James Nobert",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0012",name:"Mugasira Calvin",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"0704562992",email:"mugasiracalvin@gmail.com",status:"active"},
+      {id:"25/08/BSE/U/0013",name:"Bakulumpagi David",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0014",name:"Kanakulya Jacob",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0015",name:"Kalungi Desire Nasser",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0016",name:"Masagazi Ahmed",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0017",name:"Naluyange Angella",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0018",name:"Nakandi Christine",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0019",name:"Ayebale Ezra Kwagala",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0020",name:"Musamba Angella Promise",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0021",name:"Ssemakula Jordan Dennis",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0022",name:"Nabukeera Justine",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0023",name:"Nakabugo Hadijah",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0024",name:"Ssali Jude",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0025",name:"Nsubuga Joel",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0026",name:"Ssempeebwa Edirisa",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0027",name:"Kato Jazil",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0028",name:"Katalemwa Marvin",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+      {id:"25/08/BSE/U/0029",name:"Nazziwa Esther",program:"Bachelor of Science in Software Engineering",intake:"2025",phone:"",email:"",status:"active"},
+    ];
+
+    const INITIAL_ADMINS = [
+      {id:"ADM001",username:"dean.computing",password:"Dean@SU2025!",name:"Dean, School of Computing & Technology",role:"super_admin",email:"dean.computing@su.ac.ug",phone:""},
+      {id:"ADM002",username:"bit.coordinator",password:"BIT@SU2025!",name:"BIT Programme Coordinator",role:"lecturer",email:"bit@su.ac.ug",phone:""},
+      {id:"ADM003",username:"bse.coordinator",password:"BSE@SU2025!",name:"BSE Programme Coordinator",role:"lecturer",email:"bse@su.ac.ug",phone:""},
+      {id:"ADM004",username:"registrar",password:"Reg@SU2025!",name:"Academic Registrar",role:"registrar",email:"registrar@su.ac.ug",phone:""},
+    ];
+
+    // ═══════════════════════════════════════════════════════════════
+    // UTILITIES
+    // ═══════════════════════════════════════════════════════════════
+    const todayStr = () => new Date().toISOString().split("T")[0];
+    const nowStr = () => new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",hour12:true});
+    const fmtDate = d => { try { return new Date(d).toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}); } catch { return d; } };
+    const genOTP = () => String(Math.floor(100000+Math.random()*900000));
+    const inits = n => n.trim().split(" ").filter(Boolean).map(p=>p[0]).join("").slice(0,2).toUpperCase();
+    const isBIT = p => p.includes("Information Technology");
+
+    function matchId(a, b) {
+      const clean = s => s.replace(/[\s\/]/g,"").toLowerCase();
+      return clean(a) === clean(b);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // STYLES
+    // ═══════════════════════════════════════════════════════════════
+    const G = `
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap');
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;background:#050c1a;color:#e8edf8;font-family:'Outfit',sans-serif;}
+    ::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:#070f22;} ::-webkit-scrollbar-thumb{background:#9a7a28;border-radius:2px;}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes glow{0%,100%{box-shadow:0 0 12px rgba(180,140,40,.3)}50%{box-shadow:0 0 22px rgba(180,140,40,.55)}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+    @keyframes scan{0%{transform:translateY(-100%)}100%{transform:translateY(500%)}}
+    .anim-in{animation:up .38s cubic-bezier(.16,1,.3,1) both}
+    .fade{animation:fadeIn .3s ease both}
+    .spin{animation:spin .75s linear infinite}
+    .pulse{animation:pulse 2.5s ease infinite}
+    input,select{background:#0c1628;border:1px solid rgba(180,140,40,.2);color:#e8edf8;font-family:'Outfit',sans-serif;font-size:13.5px;border-radius:7px;padding:9px 13px;width:100%;outline:none;transition:border-color .2s,box-shadow .2s;}
+    input:focus,select:focus{border-color:rgba(180,140,40,.6);box-shadow:0 0 0 3px rgba(180,140,40,.1);}
+    input::placeholder{color:#3a4868;}
+    select option{background:#0c1628;}
+    button{cursor:pointer;font-family:'Outfit',sans-serif;}
+    table{width:100%;border-collapse:collapse;}
+    th{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#3a4868;padding:9px 13px;text-align:left;border-bottom:1px solid rgba(180,140,40,.1);}
+    td{padding:10px 13px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12.5px;color:#8090b8;vertical-align:middle;}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:rgba(180,140,40,.03);color:#c0cce8;}
+    `;
+
+    // ═══════════════════════════════════════════════════════════════
+    // DESIGN TOKENS
+    // ═══════════════════════════════════════════════════════════════
+    const T = {
+      bg:"#050c1a", bg2:"#080f20", bg3:"#0c1628",
+      card:"#0a1225", card2:"#0e1830",
+      border:"rgba(180,140,40,.15)", border2:"rgba(180,140,40,.3)",
+      gold:"#b48c28", goldL:"#d4aa40", goldXL:"#f0cc60", goldD:"#7a5e18",
+      navy:"#0d1e50", navyL:"#162766",
+      green:"#22b068", red:"#d94455", blue:"#3a7fff", orange:"#d4782a",
+      text:"#e8edf8", text2:"#8090b8", text3:"#3a4868",
+    };
+
+    // ═══════════════════════════════════════════════════════════════
+    // ICON
+    // ═══════════════════════════════════════════════════════════════
+    const IC = {
+      dash:"M3 3h7v7H3zm11 0h7v7h-7zM3 14h7v7H3zm11 0h7v7h-7z",
+      students:"M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 7a4 4 0 100 8 4 4 0 000-8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75",
+      check:"M20 6L9 17l-5-5",
+      x:"M18 6L6 18M6 6l12 12",
+      back:"M15 18l-6-6 6-6",
+      search:"M21 21l-4.35-4.35M17 11A6 6 0 105 11a6 6 0 0012 0z",
+      plus:"M12 5v14M5 12h14",
+      dl:"M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3",
+      logout:"M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9",
+      shield:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+      id:"M2 7h20v14H2zM16 11a2 2 0 11-4 0 2 2 0 014 0zM12 15s-3 0-3 1",
+      edit:"M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.1 2.1 0 013 3L12 15l-4 1 1-4 9.5-9.5z",
+      trash:"M3 6h18M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2",
+      att:"M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11",
+      admin:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+      key:"M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.78 7.78 5.5 5.5 0 017.77-7.77zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4",
+      cfg:"M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z",
+      sms:"M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z",
+      eye:"M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 100 6 3 3 0 000-6z",
+      chart:"M18 20V10M12 20V4M6 20v-6",
+      pin:"M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0zM12 10a1 1 0 100-2 1 1 0 000 2z",
+      phone:"M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.01 2.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.16 6.16l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z",
+      print:"M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z",
+      save:"M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2zM17 21v-8H7v8M7 3v5h8",
+    };
+
+    function Ico({n,s=16,c="currentColor"}) {
+      return (
+        <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}>
+          <path d={IC[n]||""}/>
+        </svg>
+      );
+    }
+
+    function Btn({children,v="gold",sz="md",onClick,disabled,full,style={}}) {
+      const base = {display:"inline-flex",alignItems:"center",justifyContent:"center",gap:7,border:"none",borderRadius:7,fontWeight:600,cursor:disabled?"not-allowed":"pointer",opacity:disabled?.5:1,transition:"all .17s",whiteSpace:"nowrap",fontFamily:"'Outfit',sans-serif",width:full?"100%":undefined};
+      const sizes = {sm:{padding:"5px 11px",fontSize:11.5},md:{padding:"9px 16px",fontSize:13},lg:{padding:"11px 22px",fontSize:14}};
+      const vars = {
+        gold:{background:`linear-gradient(135deg,${T.goldL},${T.goldD})`,color:"#06101e",fontWeight:700},
+        ghost:{background:"transparent",color:T.text2,border:`1px solid ${T.border}`},
+        navy:{background:`linear-gradient(135deg,${T.navy},${T.navyL})`,color:T.goldL,border:`1px solid rgba(180,140,40,.2)`},
+        danger:{background:"rgba(217,68,85,.1)",color:T.red,border:"1px solid rgba(217,68,85,.25)"},
+        success:{background:"rgba(34,176,104,.1)",color:T.green,border:"1px solid rgba(34,176,104,.25)"},
+      };
+      return <button onClick={onClick} disabled={disabled} style={{...base,...sizes[sz],...vars[v],...style}}>{children}</button>;
+    }
+
+    function Chip({children,c="blue"}) {
+      const m={blue:{bg:"rgba(58,127,255,.1)",fg:"#6a9fff",bd:"rgba(58,127,255,.2)"},green:{bg:"rgba(34,176,104,.1)",fg:T.green,bd:"rgba(34,176,104,.2)"},red:{bg:"rgba(217,68,85,.1)",fg:T.red,bd:"rgba(217,68,85,.2)"},gold:{bg:"rgba(180,140,40,.1)",fg:T.goldXL,bd:"rgba(180,140,40,.25)"},orange:{bg:"rgba(212,120,42,.1)",fg:T.orange,bd:"rgba(212,120,42,.2)"},gray:{bg:"rgba(58,72,104,.15)",fg:T.text3,bd:"rgba(58,72,104,.25)"}};
+      const cv=m[c]||m.blue;
+      return <span style={{display:"inline-flex",alignItems:"center",padding:"2px 8px",borderRadius:20,fontSize:10,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",letterSpacing:".05em",textTransform:"uppercase",background:cv.bg,color:cv.fg,border:`1px solid ${cv.bd}`}}>{children}</span>;
+    }
+
+    function Box({children,style={}}) {
+      return <div style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:10,...style}}>{children}</div>;
+    }
+
+    function FL({label,children}) {
+      return <div style={{marginBottom:13}}><div style={{fontSize:10.5,fontWeight:600,color:T.text2,marginBottom:5,fontFamily:"'JetBrains Mono',monospace",textTransform:"uppercase",letterSpacing:".05em"}}>{label}</div>{children}</div>;
+    }
+
+    function Toast({msg,type,onClose}) {
+      useEffect(()=>{const t=setTimeout(onClose,4000);return()=>clearTimeout(t);},[onClose]);
+      const dc={success:T.green,error:T.red,info:T.blue,warning:T.goldL}[type]||T.goldL;
+      return <div style={{position:"fixed",bottom:20,right:20,background:T.card2,border:`1px solid ${T.border2}`,borderRadius:9,padding:"12px 18px",fontSize:13,color:T.text,boxShadow:"0 8px 32px rgba(0,0,0,.6)",zIndex:9999,display:"flex",alignItems:"center",gap:10,maxWidth:360,animation:"up .3s ease"}}><div style={{width:7,height:7,borderRadius:"50%",background:dc,flexShrink:0}}/>{msg}</div>;
+    }
+
+    function Modal({children,onClose,wide}) {
+      return <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,.82)",backdropFilter:"blur(6px)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}><div onClick={e=>e.stopPropagation()} style={{background:T.card,border:`1px solid ${T.border2}`,borderRadius:14,padding:28,width:"100%",maxWidth:wide?620:480,maxHeight:"92vh",overflowY:"auto",boxShadow:"0 24px 80px rgba(0,0,0,.75)",animation:"up .32s cubic-bezier(.16,1,.3,1)"}}>{children}</div></div>;
+    }
+
+    function Logo({h=38,text=true}) {
+      const [ok,setOk]=useState(true);
+      return <div style={{display:"flex",alignItems:"center",gap:10}}>
+        {ok ? <img src="https://su.ac.ug/images/200/22537056/R-ld9s__U0LuuR9jAIJSLB1Q.png" onError={()=>setOk(false)} alt="Seeta University" style={{height:h,width:"auto",objectFit:"contain"}}/>
+          : <div style={{height:h,width:h,background:`linear-gradient(135deg,${T.navy},${T.navyL})`,borderRadius:8,border:`2px solid ${T.gold}`,display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:h*.35,fontWeight:700,color:T.goldL}}>SU</span></div>}
+        {text && <div><div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:h*.52,fontWeight:700,color:T.text,lineHeight:1.1}}>SEETA University</div><div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:h*.22,color:T.goldL,letterSpacing:".08em",textTransform:"uppercase",marginTop:1}}>A Place for Academic Excellence</div></div>}
+      </div>;
+    }
+
+    function IDCard({student}) {
+      const [ok,setOk]=useState(true);
+      const bit=isBIT(student.program);
+      const pc=bit?T.blue:T.green;
+      const code=bit?"BIT":"BSE";
+      return <div style={{width:330,height:205,background:"linear-gradient(140deg,#06102a,#0d2260,#06102a)",borderRadius:14,border:`1px solid rgba(180,140,40,.5)`,position:"relative",overflow:"hidden",boxShadow:"0 12px 48px rgba(0,0,0,.7)",flexShrink:0}}>
+        <div style={{position:"absolute",top:0,left:0,right:0,height:2.5,background:`linear-gradient(90deg,transparent,${T.goldL},${T.goldXL},${T.goldL},transparent)`}}/>
+        <div style={{position:"absolute",inset:0,backgroundImage:"radial-gradient(circle at 75% 15%,rgba(180,140,40,.07) 0%,transparent 50%)",pointerEvents:"none"}}/>
+        <div style={{position:"absolute",top:0,left:0,right:0,height:50,background:"linear-gradient(180deg,rgba(180,140,40,.05),transparent)",animation:"scan 5s linear infinite",pointerEvents:"none"}}/>
+        <div style={{background:"rgba(10,20,60,.7)",padding:"6px 11px",borderBottom:"1px solid rgba(180,140,40,.18)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{display:"flex",alignItems:"center",gap:6}}>
+            {ok?<img src="https://su.ac.ug/images/200/22537056/R-ld9s__U0LuuR9jAIJSLB1Q.png" onError={()=>setOk(false)} alt="SU" style={{height:18,objectFit:"contain"}}/>:<span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:11,fontWeight:700,color:T.goldL}}>SU</span>}
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:10,fontWeight:700,color:T.goldL,letterSpacing:".04em"}}>SEETA UNIVERSITY</span>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:4}}><Chip c={bit?"blue":"green"}>{code}</Chip></div>
+        </div>
+        <div style={{display:"flex",gap:11,padding:"9px 11px"}}>
+          <div style={{width:65,height:78,background:`linear-gradient(140deg,${T.navy},#050e28)`,borderRadius:7,border:`1.5px solid rgba(180,140,40,.4)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,fontWeight:700,color:"rgba(180,140,40,.55)"}}>{inits(student.name)}</span>
+          </div>
+          <div style={{flex:1,overflow:"hidden"}}>
+            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:13.5,fontWeight:700,color:"white",lineHeight:1.2,marginBottom:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{student.name}</div>
+            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:8,color:pc,textTransform:"uppercase",letterSpacing:".07em",marginBottom:7}}>{student.program}</div>
+            {[["REG NO",student.id],["INTAKE",student.intake],["EMAIL",student.email||"—"]].map(([k,v])=>(
+              <div key={k} style={{display:"flex",gap:5,marginBottom:2.5}}>
+                <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:7,color:T.text3,minWidth:38,flexShrink:0}}>{k}</span>
+                <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:8.5,color:"rgba(255,255,255,.5)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"4px 11px",background:"rgba(6,16,42,.65)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:6.5,color:"rgba(180,140,40,.45)",letterSpacing:".07em"}}>MBALALA · MUKONO · UGANDA · su.ac.ug</span>
+          <div style={{display:"flex",gap:1.5}}>{[...Array(13)].map((_,i)=><div key={i} style={{width:i%3===0?2.5:1.5,height:i%4===0?13:9,background:"rgba(255,255,255,.16)",borderRadius:1}}/>)}</div>
+        </div>
+        <div style={{position:"absolute",bottom:0,left:0,right:0,height:2,background:`linear-gradient(90deg,transparent,${T.goldL},transparent)`}}/>
+      </div>;
+    }
+
+    function CheckIn({students,logs,onLog,goAdmin}) {
+      const [step,setStep]=useState("id");
+      const [sid,setSid]=useState("");
+      const [digits,setDigits]=useState(["","","","","",""]);
+      const [otp,setOtp]=useState("");
+      const [student,setStudent]=useState(null);
+      const [err,setErr]=useState("");
+      const [busy,setBusy]=useState(false);
+      const [expiry,setExpiry]=useState(null);
+      const [secs,setSecs]=useState(300);
+      const refs=[useRef(),useRef(),useRef(),useRef(),useRef(),useRef()];
+
+      useEffect(()=>{
+        if(step!=="otp"||!expiry)return;
+        const iv=setInterval(()=>{
+          const left=Math.max(0,Math.ceil((expiry-Date.now())/1000));
+          setSecs(left);
+          if(left===0){setStep("id");setErr("OTP expired. Please try again.");}
+        },1000);
+        return()=>clearInterval(iv);
+      },[step,expiry]);
+
+      const lookup=e=>{
+        e&&e.preventDefault(); setErr("");
+        if(!sid.trim()){setErr("Please enter your Registration Number.");return;}
+        const s=students.find(x=>matchId(x.id,sid));
+        if(!s){setErr("Registration number not found in the system. Please verify your number or contact the Academic Registrar.");return;}
+        if(s.status!=="active"){setErr("Your account has been deactivated. Please contact the Academic Registrar.");return;}
+        const already=logs.find(l=>l.studentId===s.id&&l.date===todayStr());
+        if(already){setErr(`Attendance already recorded today at ${already.time}.`);return;}
+        setBusy(true);
+        const code=genOTP();
+        setOtp(code);
+        setStudent(s);
+        setTimeout(()=>{
+          setBusy(false);
+          setExpiry(Date.now()+300000);
+          setSecs(300);
+          setStep("otp");
+        },800);
+      };
+
+      const handleDigit=(i,val)=>{
+        const d=val.replace(/\D/,"").slice(0,1);
+        const n=[...digits]; n[i]=d; setDigits(n);
+        if(d&&i<5)refs[i+1].current?.focus();
+      };
+      const handleKey=(i,e)=>{if(e.key==="Backspace"&&!digits[i]&&i>0)refs[i-1].current?.focus();};
+
+      const verify=e=>{
+        e&&e.preventDefault(); setErr("");
+        const entered=digits.join("");
+        if(entered.length<6){setErr("Enter all 6 digits of your OTP.");return;}
+        if(entered!==otp){setErr("Incorrect OTP. Please try again.");setDigits(["","","","","",""]);refs[0].current?.focus();return;}
+        onLog({id:"L"+Date.now(),studentId:student.id,studentName:student.name,program:student.program,date:todayStr(),time:nowStr(),timestamp:Date.now()});
+        setStep("done");
+      };
+
+      const reset=()=>{setStep("id");setSid("");setDigits(["","","","","",""]);setOtp("");setStudent(null);setErr("");};
+
+      const dot={backgroundImage:`radial-gradient(rgba(180,140,40,.08) 1px,transparent 1px)`,backgroundSize:"30px 30px"};
+
+      return <div style={{minHeight:"100vh",background:T.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,...dot}}>
+        <div style={{position:"fixed",inset:0,backgroundImage:`radial-gradient(ellipse at 50% 0%,rgba(13,30,80,.7) 0%,transparent 60%)`,pointerEvents:"none"}}/>
+        <div style={{width:"100%",maxWidth:430,position:"relative",zIndex:1}}>
+          <div style={{textAlign:"center",marginBottom:26}}>
+            <div style={{display:"flex",justifyContent:"center",marginBottom:12}}><Logo h={46} text={true}/></div>
+            <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(180,140,40,.07)",border:`1px solid rgba(180,140,40,.18)`,borderRadius:20,padding:"4px 14px",marginTop:6}}>
+              <div style={{width:6,height:6,borderRadius:"50%",background:T.green}} className="pulse"/>
+              <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9.5,color:T.goldL,letterSpacing:".09em"}}>SCHOOL OF COMPUTING & TECHNOLOGY</span>
+            </div>
+          </div>
+
+          <Box style={{padding:28,border:`1px solid rgba(180,140,40,.2)`,boxShadow:`0 20px 60px rgba(0,0,0,.5)`}} className="anim-in">
+            {step==="id" && <>
+              <div style={{marginBottom:22}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,fontWeight:700,color:T.text,marginBottom:4}}>Student Attendance Check-In</div>
+                <div style={{fontSize:12.5,color:T.text3,lineHeight:1.6}}>Enter your Registration Number to receive a one-time verification code on your registered phone number.</div>
+              </div>
+              <form onSubmit={lookup}>
+                <FL label="Registration Number">
+                  <input value={sid} onChange={e=>setSid(e.target.value)} placeholder="e.g. 25/08/BIT/U/0001" autoFocus style={{fontFamily:"'JetBrains Mono',monospace",fontSize:13,letterSpacing:".03em"}}/>
+                </FL>
+                {err&&<div style={{background:"rgba(217,68,85,.08)",border:"1px solid rgba(217,68,85,.2)",borderRadius:7,padding:"9px 13px",color:T.red,fontSize:12.5,marginBottom:13,lineHeight:1.5}}>{err}</div>}
+                <Btn v="gold" sz="lg" full disabled={busy} onClick={lookup}>
+                  {busy?<><span className="spin" style={{width:13,height:13,border:"2px solid rgba(0,0,0,.2)",borderTop:"2px solid #06101e",borderRadius:"50%",display:"inline-block"}}/> Verifying…</>:<><Ico n="sms" s={15}/>Send Verification Code</>}
+                </Btn>
+              </form>
+            </>}
+
+            {step==="otp" && student && <>
+              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
+                <Btn v="ghost" sz="sm" onClick={()=>{setStep("id");setErr("");setDigits(["","","","","",""]);}}><Ico n="back" s={13}/></Btn>
+                <div>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,fontWeight:700}}>Enter Verification Code</div>
+                  <div style={{fontSize:11.5,color:T.text3}}>A 6-digit code has been sent to your registered number</div>
+                </div>
+              </div>
+              <div style={{background:T.bg3,border:`1px solid ${T.border}`,borderRadius:8,padding:"10px 13px",marginBottom:18,display:"flex",alignItems:"center",gap:11}}>
+                <div style={{width:36,height:36,borderRadius:"50%",background:`linear-gradient(135deg,${T.navy},${T.navyL})`,border:`1.5px solid rgba(180,140,40,.35)`,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',serif",fontSize:13,fontWeight:700,color:T.goldL,flexShrink:0}}>{inits(student.name)}</div>
+                <div>
+                  <div style={{fontSize:13.5,fontWeight:600,color:T.text}}>{student.name}</div>
+                  <div style={{fontSize:10.5,color:T.text3,fontFamily:"'JetBrains Mono',monospace",marginTop:1}}>{student.id}</div>
+                </div>
+                <Chip c={isBIT(student.program)?"blue":"green"} style={{marginLeft:"auto"}}>{isBIT(student.program)?"BIT":"BSE"}</Chip>
+              </div>
+
+              {!student.phone && <div style={{background:"rgba(180,140,40,.07)",border:`1px solid rgba(180,140,40,.18)`,borderRadius:7,padding:"8px 13px",marginBottom:14,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                <span style={{fontSize:11.5,color:T.text3}}>Phone not on file — code shown below:</span>
+                <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:20,fontWeight:700,color:T.goldXL,letterSpacing:".18em"}}>{otp}</span>
+              </div>}
+
+              <form onSubmit={verify}>
+                <FL label="6-Digit Code">
+                  <div style={{display:"flex",gap:7}}>
+                    {digits.map((d,i)=><input key={i} ref={refs[i]} value={d} onChange={e=>handleDigit(i,e.target.value)} onKeyDown={e=>handleKey(i,e)} maxLength={1} inputMode="numeric" style={{textAlign:"center",fontFamily:"'JetBrains Mono',monospace",fontSize:22,fontWeight:700,padding:"10px 2px",flex:1}}/>)}
+                  </div>
+                </FL>
+                <div style={{textAlign:"center",fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:secs<60?T.red:T.text3,marginBottom:13}}>
+                  Code expires in {Math.floor(secs/60)}:{String(secs%60).padStart(2,"0")}
+                </div>
+                {err&&<div style={{background:"rgba(217,68,85,.08)",border:"1px solid rgba(217,68,85,.2)",borderRadius:7,padding:"9px 13px",color:T.red,fontSize:12.5,marginBottom:13}}>{err}</div>}
+                <Btn v="gold" sz="lg" full onClick={verify}><Ico n="check" s={15}/>Confirm Check-In</Btn>
+              </form>
+              <Btn v="ghost" sz="sm" style={{width:"100%",marginTop:8}} onClick={lookup} disabled={busy}>Resend Code</Btn>
+            </>}
+
+            {step==="done" && student && <div style={{textAlign:"center"}} className="fade">
+              <div style={{width:58,height:58,borderRadius:"50%",background:"rgba(34,176,104,.12)",border:"2px solid rgba(34,176,104,.35)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px"}}>
+                <Ico n="check" s={26} c={T.green}/>
+              </div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,fontWeight:700,marginBottom:5}}>Attendance Recorded</div>
+              <div style={{fontSize:13,color:T.text3,marginBottom:20,lineHeight:1.7}}>
+                <strong style={{color:T.text}}>{student.name}</strong> — checked in at <span style={{fontFamily:"'JetBrains Mono',monospace",color:T.goldL}}>{nowStr()}</span>
+              </div>
+              <div style={{display:"flex",justifyContent:"center",marginBottom:20}}><IDCard student={student}/></div>
+              <Btn v="gold" sz="lg" full onClick={reset}>Check In Next Student</Btn>
+            </div>}
+          </Box>
+
+          <div style={{marginTop:16,display:"flex",justifyContent:"space-between",alignItems:"center",padding:"0 4px"}}>
+            <span style={{fontSize:11,color:T.text3,fontFamily:"'JetBrains Mono',monospace"}}>Mbalala, Mukono · info@su.ac.ug</span>
+            <button onClick={goAdmin} style={{background:"none",border:`1px solid ${T.border}`,borderRadius:16,color:T.text3,fontFamily:"'JetBrains Mono',monospace",fontSize:10,cursor:"pointer",padding:"4px 12px",letterSpacing:".06em",transition:"all .2s"}}
+              onMouseOver={e=>e.target.style.color=T.goldL} onMouseOut={e=>e.target.style.color=T.text3}>
+              STAFF LOGIN
+            </button>
+          </div>
+        </div>
+      </div>;
+    }
+
+    function AdminLogin({admins,onLogin,onBack}) {
+      const [u,setU]=useState(""); const [p,setP]=useState(""); const [err,setErr]=useState(""); const [busy,setBusy]=useState(false); const [show,setShow]=useState(false);
+      const handle=e=>{
+        e.preventDefault(); setErr("");
+        if(!u||!p){setErr("Please enter your username and password.");return;}
+        setBusy(true);
+        setTimeout(()=>{
+          const a=admins.find(x=>x.username===u&&x.password===p);
+          setBusy(false);
+          if(!a){setErr("Invalid credentials. Please try again or contact the IT administrator.");return;}
+          onLogin(a);
+        },700);
+      };
+      const dot={backgroundImage:`radial-gradient(rgba(180,140,40,.07) 1px,transparent 1px)`,backgroundSize:"28px 28px"};
+      return <div style={{minHeight:"100vh",background:T.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20,...dot}}>
+        <div style={{position:"fixed",inset:0,backgroundImage:`radial-gradient(ellipse at 25% 20%,rgba(13,30,80,.75) 0%,transparent 58%)`,pointerEvents:"none"}}/>
+        <div style={{width:"100%",maxWidth:390,position:"relative",zIndex:1}}>
+          <Btn v="ghost" sz="sm" onClick={onBack} style={{marginBottom:20}}><Ico n="back" s={13}/>Return to Check-In</Btn>
+          <Box style={{padding:28,border:`1px solid rgba(180,140,40,.2)`}} className="anim-in">
+            <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:24}}>
+              <div style={{width:44,height:44,background:`linear-gradient(135deg,${T.navy},#040d22)`,borderRadius:11,border:`1px solid rgba(180,140,40,.25)`,display:"flex",alignItems:"center",justifyContent:"center"}}><Ico n="shield" s={21} c={T.goldL}/></div>
+              <div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:19,fontWeight:700}}>Staff Login</div>
+                <div style={{fontSize:11.5,color:T.text3}}>Seeta University — Authorised Personnel Only</div>
+              </div>
+            </div>
+            <form onSubmit={handle}>
+              <FL label="Username"><input value={u} onChange={e=>setU(e.target.value)} placeholder="your.username" autoComplete="username" autoFocus/></FL>
+              <FL label="Password">
+                <div style={{position:"relative"}}>
+                  <input type={show?"text":"password"} value={p} onChange={e=>setP(e.target.value)} placeholder="••••••••" autoComplete="current-password" style={{paddingRight:40}}/>
+                  <button type="button" onClick={()=>setShow(!show)} style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",color:T.text3,padding:2}}><Ico n="eye" s={15} c={T.text3}/></button>
+                </div>
+              </FL>
+              {err&&<div style={{background:"rgba(217,68,85,.08)",border:"1px solid rgba(217,68,85,.2)",borderRadius:7,padding:"9px 13px",color:T.red,fontSize:12.5,marginBottom:13}}>{err}</div>}
+              <Btn v="gold" sz="lg" full disabled={busy} onClick={handle}>{busy?"Authenticating…":<><Ico n="key" s={15}/>Sign In</>}</Btn>
+            </form>
+            <div style={{marginTop:16,paddingTop:14,borderTop:`1px solid ${T.border}`,fontSize:12,color:T.text3,textAlign:"center",lineHeight:1.6}}>
+              Forgot your credentials? Contact the IT Administrator<br/>or email <span style={{color:T.goldL}}>it@su.ac.ug</span>
+            </div>
+          </Box>
+          <div style={{textAlign:"center",marginTop:12,fontSize:11,color:T.text3}}>Mbalala, Mukono, Uganda · 0393 102905</div>
+        </div>
+      </div>;
+    }
+
+    function EditStudentModal({student,onClose,onSave}) {
+      const [f,setF]=useState({...student});
+      const [err,setErr]=useState("");
+      const set=(k,v)=>setF(p=>({...p,[k]:v}));
+      const save=()=>{
+        if(!f.name.trim()||!f.id.trim()){setErr("Name and Registration Number are required.");return;}
+        onSave(f);
+      };
+      return <Modal onClose={onClose}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:19,fontWeight:700}}>Edit Student Record</div>
+          <Btn v="ghost" sz="sm" onClick={onClose}><Ico n="x" s={13}/></Btn>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+          <div style={{gridColumn:"1/-1"}}><FL label="Full Name"><input value={f.name} onChange={e=>set("name",e.target.value)}/></FL></div>
+          <FL label="Registration No."><input value={f.id} onChange={e=>set("id",e.target.value)} style={{fontFamily:"'JetBrains Mono',monospace"}}/></FL>
+          <FL label="Intake Year"><input value={f.intake} onChange={e=>set("intake",e.target.value)}/></FL>
+          <div style={{gridColumn:"1/-1"}}><FL label="Programme">
+            <select value={f.program} onChange={e=>set("program",e.target.value)}>
+              <option value="Bachelor of Information Technology">Bachelor of Information Technology (BIT)</option>
+              <option value="Bachelor of Science in Software Engineering">Bachelor of Science in Software Engineering (BSE)</option>
+            </select>
+          </FL></div>
+          <FL label="Phone Number"><input value={f.phone} onChange={e=>set("phone",e.target.value)} placeholder="+256 700 000000"/></FL>
+          <FL label="Academic Email"><input value={f.email} onChange={e=>set("email",e.target.value)} placeholder="student@su.ac.ug"/></FL>
+          <div style={{gridColumn:"1/-1"}}><FL label="Status">
+            <select value={f.status} onChange={e=>set("status",e.target.value)}>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive / Suspended</option>
+            </select>
+          </FL></div>
+        </div>
+        {err&&<div style={{background:"rgba(217,68,85,.08)",border:"1px solid rgba(217,68,85,.2)",borderRadius:7,padding:"9px 13px",color:T.red,fontSize:12.5,marginBottom:13}}>{err}</div>}
+        <div style={{display:"flex",gap:9,justifyContent:"flex-end"}}>
+          <Btn v="ghost" onClick={onClose}>Cancel</Btn>
+          <Btn v="gold" onClick={save}><Ico n="save" s={14}/>Save Changes</Btn>
+        </div>
+      </Modal>;
+    }
+
+    function StudentModal({student,logs,onClose,onEdit}) {
+      const sLogs=logs.filter(l=>l.studentId===student.id).sort((a,b)=>b.timestamp-a.timestamp);
+      return <Modal onClose={onClose} wide>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
+          <div><div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:19,fontWeight:700}}>{student.name}</div><div style={{fontSize:11,color:T.text3,fontFamily:"'JetBrains Mono',monospace"}}>{student.id}</div></div>
+          <div style={{display:"flex",gap:8}}>
+            <Btn v="ghost" sz="sm" onClick={()=>onEdit(student)}><Ico n="edit" s={13}/>Edit</Btn>
+            <Btn v="ghost" sz="sm" onClick={onClose}><Ico n="x" s={13}/></Btn>
+          </div>
+        </div>
+        <div style={{display:"flex",justifyContent:"center",marginBottom:16}}><IDCard student={student}/></div>
+        <div style={{display:"flex",gap:8,justifyContent:"center",marginBottom:18}}>
+          <Btn v="navy" sz="sm" onClick={()=>window.print()}><Ico n="print" s={13}/>Print Card</Btn>
+        </div>
+        <Box style={{padding:14,marginBottom:14}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+            {[["Programme",student.program],["Intake",student.intake],["Phone",student.phone||"Not registered"],["Email",student.email||"Not registered"],["Status",student.status],["Total Attendance",sLogs.length+" session"+(sLogs.length!==1?"s":"")]].map(([k,v])=>(
+              <div key={k}><div style={{fontSize:9.5,color:T.text3,fontFamily:"'JetBrains Mono',monospace",textTransform:"uppercase",letterSpacing:".06em"}}>{k}</div><div style={{fontSize:13,color:T.text,marginTop:2}}>{v}</div></div>
+            ))}
+          </div>
+        </Box>
+        {sLogs.length>0&&<><div style={{fontSize:10,color:T.text3,fontFamily:"'JetBrains Mono',monospace",textTransform:"uppercase",marginBottom:8}}>Attendance Log</div>
+          <div style={{maxHeight:160,overflowY:"auto"}}>
+            {sLogs.slice(0,12).map(l=><div key={l.id} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`1px solid ${T.border}`,fontSize:12,alignItems:"center"}}>
+              <span style={{color:T.text2}}>{fmtDate(l.date)}</span>
+              <span style={{fontFamily:"'JetBrains Mono',monospace",color:T.text3,fontSize:11}}>{l.time}</span>
+              <Chip c="green">Present</Chip>
+            </div>)}
+          </div>
+        </>}
+      </Modal>;
+    }
+
+    function AddStudentModal({onClose,onSave,students}) {
+      const [f,setF]=useState({id:"",name:"",program:"Bachelor of Information Technology",intake:"2025",phone:"",email:"",status:"active"});
+      const [err,setErr]=useState("");
+      const set=(k,v)=>setF(p=>({...p,[k]:v}));
+      const save=()=>{
+        if(!f.id.trim()||!f.name.trim()||!f.program){setErr("Registration number, name, and programme are required.");return;}
+        if(students.find(s=>matchId(s.id,f.id))){setErr("A student with this registration number already exists.");return;}
+        onSave({...f,id:f.id.trim()});
+      };
+      return <Modal onClose={onClose}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:19,fontWeight:700}}>Register New Student</div>
+          <Btn v="ghost" sz="sm" onClick={onClose}><Ico n="x" s={13}/></Btn>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+          <FL label="Registration Number"><input value={f.id} onChange={e=>set("id",e.target.value)} placeholder="25/08/BIT/U/0001" style={{fontFamily:"'JetBrains Mono',monospace"}}/></FL>
+          <FL label="Full Name"><input value={f.name} onChange={e=>set("name",e.target.value)} placeholder="Full legal name"/></FL>
+          <div style={{gridColumn:"1/-1"}}><FL label="Programme">
+            <select value={f.program} onChange={e=>set("program",e.target.value)}>
+              <option value="Bachelor of Information Technology">Bachelor of Information Technology (BIT)</option>
+              <option value="Bachelor of Science in Software Engineering">Bachelor of Science in Software Engineering (BSE)</option>
+            </select>
+          </FL></div>
+          <FL label="Intake Year"><input value={f.intake} onChange={e=>set("intake",e.target.value)}/></FL>
+          <FL label="Phone Number"><input value={f.phone} onChange={e=>set("phone",e.target.value)} placeholder="+256 700 000000"/></FL>
+          <div style={{gridColumn:"1/-1"}}><FL label="Academic Email"><input value={f.email} onChange={e=>set("email",e.target.value)} placeholder="student@su.ac.ug"/></FL></div>
+        </div>
+        {err&&<div style={{background:"rgba(217,68,85,.08)",border:"1px solid rgba(217,68,85,.2)",borderRadius:7,padding:"9px 13px",color:T.red,fontSize:12.5,marginBottom:13}}>{err}</div>}
+        <div style={{display:"flex",gap:9,justifyContent:"flex-end"}}>
+          <Btn v="ghost" onClick={onClose}>Cancel</Btn>
+          <Btn v="gold" onClick={save}><Ico n="plus" s={14}/>Register Student</Btn>
+        </div>
+      </Modal>;
+    }
+
+    function EditAdminModal({admin,onClose,onSave}) {
+      const [f,setF]=useState({...admin,newPassword:""});
+      const [err,setErr]=useState("");
+      const set=(k,v)=>setF(p=>({...p,[k]:v}));
+      const save=()=>{
+        if(!f.name.trim()||!f.username.trim()||!f.email.trim()){setErr("Name, username, and email are required.");return;}
+        if(f.newPassword&&f.newPassword.length<8){setErr("New password must be at least 8 characters.");return;}
+        const updated={...f};
+        if(f.newPassword)updated.password=f.newPassword;
+        delete updated.newPassword;
+        onSave(updated);
+      };
+      return <Modal onClose={onClose}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:19,fontWeight:700}}>Edit Staff Account</div>
+          <Btn v="ghost" sz="sm" onClick={onClose}><Ico n="x" s={13}/></Btn>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+          <div style={{gridColumn:"1/-1"}}><FL label="Full Name"><input value={f.name} onChange={e=>set("name",e.target.value)}/></FL></div>
+          <FL label="Username"><input value={f.username} onChange={e=>set("username",e.target.value)}/></FL>
+          <FL label="Role"><select value={f.role} onChange={e=>set("role",e.target.value)}><option value="lecturer">Lecturer</option><option value="registrar">Registrar</option><option value="super_admin">Dean / Super Admin</option></select></FL>
+          <FL label="Phone Number"><input value={f.phone||""} onChange={e=>set("phone",e.target.value)} placeholder="+256 700 000000"/></FL>
+          <FL label="Email Address"><input value={f.email} onChange={e=>set("email",e.target.value)} placeholder="staff@su.ac.ug"/></FL>
+          <div style={{gridColumn:"1/-1"}}><FL label="New Password (leave blank to keep current)"><input type="password" value={f.newPassword} onChange={e=>set("newPassword",e.target.value)} placeholder="Min. 8 characters"/></FL></div>
+        </div>
+        {err&&<div style={{background:"rgba(217,68,85,.08)",border:"1px solid rgba(217,68,85,.2)",borderRadius:7,padding:"9px 13px",color:T.red,fontSize:12.5,marginBottom:13}}>{err}</div>}
+        <div style={{display:"flex",gap:9,justifyContent:"flex-end"}}>
+          <Btn v="ghost" onClick={onClose}>Cancel</Btn>
+          <Btn v="gold" onClick={save}><Ico n="save" s={14}/>Save Changes</Btn>
+        </div>
+      </Modal>;
+    }
+
+    function AddAdminModal({onClose,onSave}) {
+      const [f,setF]=useState({name:"",username:"",password:"",email:"",phone:"",role:"lecturer"});
+      const [err,setErr]=useState("");
+      const set=(k,v)=>setF(p=>({...p,[k]:v}));
+      const save=()=>{
+        if(!f.name||!f.username||!f.password||!f.email){setErr("All fields except phone are required.");return;}
+        if(f.password.length<8){setErr("Password must be at least 8 characters.");return;}
+        onSave({...f,id:"ADM"+Date.now()});
+      };
+      return <Modal onClose={onClose}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:19,fontWeight:700}}>Add Staff Account</div>
+          <Btn v="ghost" sz="sm" onClick={onClose}><Ico n="x" s={13}/></Btn>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+          <div style={{gridColumn:"1/-1"}}><FL label="Full Name / Title"><input value={f.name} onChange={e=>set("name",e.target.value)} placeholder="e.g. Dr. John Doe"/></FL></div>
+          <FL label="Username"><input value={f.username} onChange={e=>set("username",e.target.value)} placeholder="john.doe"/></FL>
+          <FL label="Role"><select value={f.role} onChange={e=>set("role",e.target.value)}><option value="lecturer">Lecturer</option><option value="registrar">Registrar</option><option value="super_admin">Dean / Super Admin</option></select></FL>
+          <FL label="Phone Number"><input value={f.phone} onChange={e=>set("phone",e.target.value)} placeholder="+256 700 000000"/></FL>
+          <FL label="Email Address"><input value={f.email} onChange={e=>set("email",e.target.value)} placeholder="staff@su.ac.ug"/></FL>
+          <div style={{gridColumn:"1/-1"}}><FL label="Password"><input type="password" value={f.password} onChange={e=>set("password",e.target.value)} placeholder="Min. 8 characters"/></FL></div>
+        </div>
+        {err&&<div style={{background:"rgba(217,68,85,.08)",border:"1px solid rgba(217,68,85,.2)",borderRadius:7,padding:"9px 13px",color:T.red,fontSize:12.5,marginBottom:13}}>{err}</div>}
+        <div style={{display:"flex",gap:9,justifyContent:"flex-end"}}>
+          <Btn v="ghost" onClick={onClose}>Cancel</Btn>
+          <Btn v="gold" onClick={save}><Ico n="plus" s={14}/>Create Account</Btn>
+        </div>
+      </Modal>;
+    }
+
+    function Dashboard({admin,students,setStudents,admins,setAdmins,logs,setLogs}) {
+      const [page,setPage]=useState("overview");
+      const [toast,setToast]=useState(null);
+      const [selStu,setSelStu]=useState(null);
+      const [editStu,setEditStu]=useState(null);
+      const [addStu,setAddStu]=useState(false);
+      const [editAdm,setEditAdm]=useState(null);
+      const [addAdm,setAddAdm]=useState(false);
+      const [sidebar,setSidebar]=useState(true);
+      const [stuQ,setStuQ]=useState("");
+      const [stuProg,setStuProg]=useState("all");
+      const [attDate,setAttDate]=useState(todayStr());
+      const [attQ,setAttQ]=useState("");
+
+      const say=(msg,type="info")=>setToast({msg,type});
+      const todayLogs=logs.filter(l=>l.date===todayStr());
+      const canStu=["super_admin","registrar"].includes(admin.role);
+      const canAdm=admin.role==="super_admin";
+
+      const nav=[
+        {id:"overview",label:"Overview",ic:"dash"},
+        {id:"students",label:"Students",ic:"students"},
+        {id:"attendance",label:"Attendance",ic:"att"},
+        ...(canAdm?[{id:"staff",label:"Staff Accounts",ic:"admin"}]:[]),
+        {id:"sms",label:"SMS Settings",ic:"cfg"},
+      ];
+
+      const exportCSV=(data,name)=>{
+        if(!data.length){say("No data to export","warning");return;}
+        const h=Object.keys(data[0]);
+        const csv=[h.join(","),...data.map(r=>h.map(k=>`"${String(r[k]??"").replace(/"/g,'""')}"`).join(","))].join("\n");
+        const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=name;a.click();
+        say("File exported successfully","success");
+      };
+
+      let stuList=students.filter(s=>{
+        const q=stuQ.toLowerCase();
+        return (!q||[s.name,s.id,s.phone,s.email].some(v=>(v||"").toLowerCase().includes(q)))&&(stuProg==="all"||s.program===stuProg);
+      });
+
+      let attList=logs.filter(l=>{
+        const q=attQ.toLowerCase();
+        return l.date===attDate&&(!q||[l.studentName,l.studentId].some(v=>v.toLowerCase().includes(q)));
+      });
+
+      return <div style={{display:"flex",height:"100vh",background:T.bg,overflow:"hidden"}}>
+        <div style={{width:sidebar?218:56,background:T.bg2,borderRight:`1px solid ${T.border}`,display:"flex",flexDirection:"column",transition:"width .2s",flexShrink:0}}>
+          <div style={{padding:sidebar?"16px 14px 13px":"16px 10px 13px",borderBottom:`1px solid ${T.border}`,display:"flex",alignItems:"center",gap:9}}>
+            {sidebar?<Logo h={28} text/>:<Logo h={28} text={false}/>}
+            <button onClick={()=>setSidebar(!sidebar)} style={{marginLeft:"auto",background:"none",border:"none",color:T.text3,padding:3,flexShrink:0,cursor:"pointer"}}><Ico n="dash" s={13} c={T.text3}/></button>
+          </div>
+          <nav style={{flex:1,padding:"10px 7px",display:"flex",flexDirection:"column",gap:2}}>
+            {nav.map(n=>{
+              const act=page===n.id;
+              return <div key={n.id} onClick={()=>setPage(n.id)} title={!sidebar?n.label:undefined} style={{display:"flex",alignItems:"center",gap:9,padding:"9px 10px",borderRadius:7,cursor:"pointer",color:act?T.goldXL:T.text2,background:act?"rgba(180,140,40,.08)":"transparent",border:act?`1px solid rgba(180,140,40,.18)`:"1px solid transparent",transition:"all .14s",fontSize:13}}>
+                <Ico n={n.ic} s={15} c={act?T.goldXL:T.text2}/>{sidebar&&<span>{n.label}</span>}
+              </div>;
+            })}
+          </nav>
+          <div style={{padding:"10px 7px",borderTop:`1px solid ${T.border}`}}>
+            {sidebar&&<div style={{padding:"9px 10px",marginBottom:6,background:T.card,borderRadius:8,border:`1px solid ${T.border}`}}>
+              <div style={{fontSize:12,fontWeight:600,color:T.text,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{admin.name}</div>
+              <Chip c={admin.role==="super_admin"?"gold":admin.role==="registrar"?"orange":"blue"} style={{marginTop:4}}>{admin.role==="super_admin"?"Super Admin":admin.role==="registrar"?"Registrar":"Lecturer"}</Chip>
+            </div>}
+            <div onClick={()=>{if(window.confirm("Sign out of the attendance system?"))window.location.reload();}} style={{display:"flex",alignItems:"center",gap:9,padding:"9px 10px",borderRadius:7,cursor:"pointer",color:T.text2,fontSize:13,transition:"all .14s"}}>
+              <Ico n="logout" s={15}/>{sidebar&&<span>Sign Out</span>}
+            </div>
+          </div>
+        </div>
+
+        <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+          <div style={{background:T.bg2,borderBottom:`1px solid ${T.border}`,padding:"11px 22px",display:"flex",alignItems:"center",gap:12}}>
+            <div style={{flex:1}}>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,fontWeight:700}}>{nav.find(n=>n.id===page)?.label}</div>
+              <div style={{fontSize:10,color:T.text3,fontFamily:"'JetBrains Mono',monospace"}}>{new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</div>
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:7}}><div style={{width:6,height:6,borderRadius:"50%",background:T.green}} className="pulse"/><span style={{fontSize:10,color:T.text3,fontFamily:"'JetBrains Mono',monospace"}}>SYSTEM ACTIVE</span></div>
+            <Box style={{padding:"4px 13px",fontSize:11,fontFamily:"'JetBrains Mono',monospace",color:T.goldL}}>{todayLogs.length} check-in{todayLogs.length!==1?"s":""} today</Box>
+          </div>
+
+          <div style={{flex:1,overflowY:"auto",padding:20}}>
+            {page==="overview" && <div className="anim-in">
+              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:11,marginBottom:16}}>
+                {[
+                  {l:"Total Enrolled",v:students.length,c:T.goldL,ic:"students"},
+                  {l:"Present Today",v:new Set(todayLogs.map(l=>l.studentId)).size,c:T.green,ic:"check"},
+                  {l:"BIT Students",v:students.filter(s=>isBIT(s.program)).length,c:T.blue,ic:"chart"},
+                  {l:"BSE Students",v:students.filter(s=>!isBIT(s.program)).length,c:T.orange,ic:"att"},
+                ].map((s,i)=><Box key={i} style={{padding:"16px 15px"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+                    <span style={{fontSize:9.5,color:T.text3,fontFamily:"'JetBrains Mono',monospace",textTransform:"uppercase",letterSpacing:".07em"}}>{s.l}</span>
+                    <div style={{width:28,height:28,borderRadius:7,background:`${s.c}14`,display:"flex",alignItems:"center",justifyContent:"center"}}><Ico n={s.ic} s={13} c={s.c}/></div>
+                  </div>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:30,fontWeight:700,color:s.c,lineHeight:1}}>{s.v}</div>
+                </Box>)}
+              </div>
+
+              <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:14,marginBottom:14}}>
+                <Box style={{padding:18}}>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,fontWeight:700,marginBottom:12}}>Recent Check-ins</div>
+                  {logs.length===0?<div style={{textAlign:"center",padding:24,color:T.text3,fontSize:12}}>No check-ins recorded yet.</div>:
+                  <table><thead><tr><th>Name</th><th>Reg. No.</th><th>Programme</th><th>Time</th><th>Status</th></tr></thead>
+                  <tbody>{[...logs].sort((a,b)=>b.timestamp-a.timestamp).slice(0,8).map(l=><tr key={l.id}>
+                    <td style={{fontWeight:600,color:T.text}}>{l.studentName}</td>
+                    <td style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:T.goldL}}>{l.studentId}</td>
+                    <td><Chip c={isBIT(l.program)?"blue":"green"}>{isBIT(l.program)?"BIT":"BSE"}</Chip></td>
+                    <td style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11}}>{l.time}</td>
+                    <td><Chip c="green">Present</Chip></td>
+                  </tr>)}</tbody></table>}
+                </Box>
+                <Box style={{padding:18}}>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:15,fontWeight:700,marginBottom:12}}>Today's Rate</div>
+                  <div style={{textAlign:"center",marginBottom:14}}>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:42,fontWeight:700,color:T.goldL}}>{students.length?Math.round((new Set(todayLogs.map(l=>l.studentId)).size/students.length)*100):0}%</div>
+                    <div style={{fontSize:11,color:T.text3}}>attendance rate</div>
+                  </div>
+                  {[["BIT",students.filter(s=>isBIT(s.program)).length,new Set(todayLogs.filter(l=>isBIT(l.program)).map(l=>l.studentId)).size,T.blue],["BSE",students.filter(s=>!isBIT(s.program)).length,new Set(todayLogs.filter(l=>!isBIT(l.program)).map(l=>l.studentId)).size,T.green]].map(([lb,tot,pr,cl])=><div key={lb} style={{marginBottom:12}}>
+                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:4,fontSize:11}}><span style={{color:T.text2}}>{lb}</span><span style={{color:T.text3,fontFamily:"'JetBrains Mono',monospace"}}>{pr}/{tot}</span></div>
+                    <div style={{height:5,background:T.bg3,borderRadius:3}}><div style={{height:"100%",width:`${tot?Math.round((pr/tot)*100):0}%`,background:cl,borderRadius:3}}/></div>
+                  </div>)}
+                </Box>
+              </div>
+            </div>}
+
+            {page==="students" && <div className="anim-in">
+              <div style={{display:"flex",gap:9,marginBottom:13,flexWrap:"wrap",alignItems:"center"}}>
+                <div style={{flex:1,minWidth:180,position:"relative"}}>
+                  <div style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)"}}><Ico n="search" s={13} c={T.text3}/></div>
+                  <input value={stuQ} onChange={e=>setStuQ(e.target.value)} placeholder="Search by name, reg. number, phone or email…" style={{paddingLeft:32}}/>
+                </div>
+                <select value={stuProg} onChange={e=>setStuProg(e.target.value)} style={{width:"auto",minWidth:120}}>
+                  <option value="all">All Programmes</option>
+                  <option value="Bachelor of Information Technology">BIT</option>
+                  <option value="Bachelor of Science in Software Engineering">BSE</option>
+                </select>
+                <Btn v="ghost" sz="sm" onClick={()=>exportCSV(stuList.map(s=>({"Reg No":s.id,Name:s.name,Programme:s.program,Intake:s.intake,Phone:s.phone,Email:s.email,Status:s.status})),"students.csv")}><Ico n="dl" s={13}/>Export CSV</Btn>
+                {canStu&&<Btn v="gold" sz="sm" onClick={()=>setAddStu(true)}><Ico n="plus" s={13}/>Add Student</Btn>}
+              </div>
+              <Box style={{overflow:"hidden"}}>
+                <div style={{padding:"10px 13px",borderBottom:`1px solid ${T.border}`,display:"flex",gap:8,alignItems:"center",fontSize:12,color:T.text3}}>
+                  <span>{stuList.length} student{stuList.length!==1?"s":""}</span>
+                  <Chip c="blue">{stuList.filter(s=>isBIT(s.program)).length} BIT</Chip>
+                  <Chip c="green">{stuList.filter(s=>!isBIT(s.program)).length} BSE</Chip>
+                </div>
+                <div style={{overflowX:"auto"}}>
+                  <table>
+                    <thead><tr><th>#</th><th>Reg. No.</th><th>Name</th><th>Prog.</th><th>Phone</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody>{stuList.map((s,i)=>{
+                      const todayIn=logs.some(l=>l.studentId===s.id&&l.date===todayStr());
+                      return <tr key={s.id}>
+                        <td style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:T.text3}}>{String(i+1).padStart(2,"0")}</td>
+                        <td style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:T.gold}}>{s.id}</td>
+                        <td style={{fontWeight:600,color:T.text}}>
+                          <div style={{display:"flex",alignItems:"center",gap:7}}>
+                            <div style={{width:26,height:26,borderRadius:"50%",background:`linear-gradient(135deg,${T.navy},${T.navyL})`,border:`1px solid rgba(180,140,40,.3)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9.5,fontWeight:700,color:T.goldL,flexShrink:0}}>{inits(s.name)}</div>
+                            {s.name}
+                          </div>
+                        </td>
+                        <td><Chip c={isBIT(s.program)?"blue":"green"}>{isBIT(s.program)?"BIT":"BSE"}</Chip></td>
+                        <td style={{fontSize:11.5,fontFamily:"'JetBrains Mono',monospace",color:s.phone?T.text2:T.text3}}>{s.phone||"—"}</td>
+                        <td style={{fontSize:11.5,color:s.email?T.text2:T.text3}}>{s.email||"—"}</td>
+                        <td>
+                          <div style={{display:"flex",flexDirection:"column",gap:3}}>
+                            <Chip c={s.status==="active"?"green":"red"}>{s.status}</Chip>
+                            {todayIn&&<Chip c="gold">Today ✓</Chip>}
+                          </div>
+                        </td>
+                        <td>
+                          <div style={{display:"flex",gap:5}}>
+                            <Btn v="ghost" sz="sm" onClick={()=>setSelStu(s)} title="View ID Card"><Ico n="id" s={12}/></Btn>
+                            {canStu&&<Btn v="ghost" sz="sm" onClick={()=>setEditStu(s)} title="Edit Details"><Ico n="edit" s={12}/></Btn>}
+                            {canAdm&&<Btn v="danger" sz="sm" onClick={()=>{if(window.confirm(`Delete ${s.name}?`)){setStudents(p=>p.filter(x=>x.id!==s.id));say("Student record deleted","success");}}} title="Delete"><Ico n="trash" s={12}/></Btn>}
+                          </div>
+                        </td>
+                      </tr>;
+                    })}
+                    {stuList.length===0&&<tr><td colSpan={8} style={{textAlign:"center",padding:28,color:T.text3}}>No students match your search.</td></tr>}
+                    </tbody>
+                  </table>
+                </div>
+              </Box>
+            </div>}
+
+            {page==="attendance" && <div className="anim-in">
+              <div style={{display:"flex",gap:9,marginBottom:13,flexWrap:"wrap",alignItems:"flex-end"}}>
+                <div><div style={{fontSize:10,color:T.text3,fontFamily:"'JetBrains Mono',monospace",textTransform:"uppercase",marginBottom:5}}>Date</div><input type="date" value={attDate} onChange={e=>setAttDate(e.target.value)} max={todayStr()} style={{width:"auto"}}/></div>
+                <div style={{flex:1,minWidth:160}}>
+                  <div style={{fontSize:10,color:T.text3,fontFamily:"'JetBrains Mono',monospace",textTransform:"uppercase",marginBottom:5}}>Search</div>
+                  <div style={{position:"relative"}}><div style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)"}}><Ico n="search" s={13} c={T.text3}/></div><input value={attQ} onChange={e=>setAttQ(e.target.value)} placeholder="Name or registration number…" style={{paddingLeft:32}}/></div>
+                </div>
+                <Btn v="ghost" sz="sm" onClick={()=>exportCSV(attList.map(l=>({"Reg No":l.studentId,Name:l.studentName,Programme:l.program,Date:l.date,"Check-in Time":l.time,Status:"Present"})),`attendance_${attDate}.csv`)}><Ico n="dl" s={13}/>Export CSV</Btn>
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10,marginBottom:13}}>
+                {[["Present",new Set(attList.map(l=>l.studentId)).size,T.green],["Absent",students.length-new Set(attList.map(l=>l.studentId)).size,T.red],["BIT",new Set(attList.filter(l=>isBIT(l.program)).map(l=>l.studentId)).size,T.blue],["BSE",new Set(attList.filter(l=>!isBIT(l.program)).map(l=>l.studentId)).size,T.orange]].map(([lb,v,cl])=>(
+                  <Box key={lb} style={{padding:"13px 15px"}}>
+                    <div style={{fontSize:9.5,color:T.text3,fontFamily:"'JetBrains Mono',monospace",textTransform:"uppercase",marginBottom:4}}>{lb}</div>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:26,fontWeight:700,color:cl}}>{v}</div>
+                  </Box>
+                ))}
+              </div>
+              <Box style={{overflow:"hidden"}}>
+                <div style={{padding:"10px 13px",borderBottom:`1px solid ${T.border}`,fontSize:12,color:T.text3}}>{attList.length} record{attList.length!==1?"s":""} — {fmtDate(attDate)}</div>
+                <div style={{overflowX:"auto"}}>
+                  <table>
+                    <thead><tr><th>#</th><th>Reg. No.</th><th>Name</th><th>Programme</th><th>Check-in Time</th><th>Status</th></tr></thead>
+                    <tbody>
+                      {attList.map((l,i)=><tr key={l.id}>
+                        <td style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:T.text3}}>{String(i+1).padStart(2,"0")}</td>
+                        <td style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:T.gold}}>{l.studentId}</td>
+                        <td style={{fontWeight:600,color:T.text}}>{l.studentName}</td>
+                        <td><Chip c={isBIT(l.program)?"blue":"green"}>{isBIT(l.program)?"BIT":"BSE"}</Chip></td>
+                        <td style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11}}>{l.time}</td>
+                        <td><Chip c="green">Present</Chip></td>
+                      </tr>)}
+                      {attList.length===0&&<tr><td colSpan={6} style={{textAlign:"center",padding:28,color:T.text3}}>No attendance records for {fmtDate(attDate)}.</td></tr>}
+                    </tbody>
+                  </table>
+                </div>
+              </Box>
+            </div>}
+
+            {page==="staff" && canAdm && <div className="anim-in">
+              <div style={{display:"flex",justifyContent:"flex-end",marginBottom:13}}>
+                <Btn v="gold" sz="sm" onClick={()=>setAddAdm(true)}><Ico n="plus" s={13}/>Add Staff Account</Btn>
+              </div>
+              <Box style={{overflow:"hidden"}}>
+                <table>
+                  <thead><tr><th>Name</th><th>Username</th><th>Phone</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+                  <tbody>{admins.map(a=><tr key={a.id}>
+                    <td style={{fontWeight:600,color:T.text}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8}}>
+                        <div style={{width:28,height:28,borderRadius:"50%",background:a.role==="super_admin"?"rgba(180,140,40,.15)":T.navy,border:`1.5px solid rgba(180,140,40,.25)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,color:T.goldL,flexShrink:0}}>{inits(a.name)}</div>
+                        {a.name}{a.id===admin.id&&<Chip c="green">You</Chip>}
+                      </div>
+                    </td>
+                    <td style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11}}>{a.username}</td>
+                    <td style={{fontSize:11.5,fontFamily:"'JetBrains Mono',monospace",color:a.phone?T.text2:T.text3}}>{a.phone||"—"}</td>
+                    <td style={{fontSize:11.5}}>{a.email}</td>
+                    <td><Chip c={a.role==="super_admin"?"gold":a.role==="registrar"?"orange":"blue"}>{a.role==="super_admin"?"Super Admin":a.role==="registrar"?"Registrar":"Lecturer"}</Chip></td>
+                    <td>
+                      <div style={{display:"flex",gap:5}}>
+                        <Btn v="ghost" sz="sm" onClick={()=>setEditAdm(a)}><Ico n="edit" s={12}/>Edit</Btn>
+                        {a.id!==admin.id&&<Btn v="danger" sz="sm" onClick={()=>{if(window.confirm(`Remove ${a.name}?`)){setAdmins(p=>p.filter(x=>x.id!==a.id));say("Account removed","success");}}}><Ico n="trash" s={12}/></Btn>}
+                      </div>
+                    </td>
+                  </tr>)}</tbody>
+                </table>
+              </Box>
+            </div>}
+
+            {page==="sms" && <div className="anim-in" style={{maxWidth:580}}>
+              <Box style={{padding:22,marginBottom:14}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:17,fontWeight:700,marginBottom:16}}>SMS Gateway — Africa's Talking</div>
+                <FL label="API Username"><input placeholder="Your Africa's Talking username"/></FL>
+                <FL label="API Key"><input type="password" placeholder="Your API key"/></FL>
+                <FL label="Sender ID"><input defaultValue="SEETA_UNI" placeholder="SEETA_UNI"/></FL>
+                <FL label="Environment">
+                  <select><option value="sandbox">Sandbox (Testing)</option><option value="live">Live (Production)</option></select>
+                </FL>
+                <Btn v="gold" onClick={()=>say("SMS configuration saved","success")}><Ico n="save" s={14}/>Save Configuration</Btn>
+              </Box>
+              <Box style={{padding:22,marginBottom:14}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:17,fontWeight:700,marginBottom:16}}>Twilio (Alternative)</div>
+                <FL label="Account SID"><input placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"/></FL>
+                <FL label="Auth Token"><input type="password" placeholder="Auth token"/></FL>
+                <FL label="From Number"><input placeholder="+1xxxxxxxxxx"/></FL>
+                <Btn v="ghost" onClick={()=>say("Twilio configuration saved","success")}><Ico n="save" s={14}/>Save Twilio Config</Btn>
+              </Box>
+              <Box style={{padding:18}}>
+                <div style={{background:"rgba(180,140,40,.07)",border:`1px solid rgba(180,140,40,.18)`,borderRadius:7,padding:"12px 14px",fontSize:12.5,color:T.text2,lineHeight:1.8}}>
+                  <strong style={{color:T.goldL}}>Deployment Instructions:</strong> Configure your Africa's Talking credentials above. Once set, OTP codes will be delivered via SMS to students' registered phone numbers instantly upon check-in. Ensure each student's phone number is captured and saved in the Students section. Africa's Talking supports MTN Uganda, Airtel Uganda, and all major carriers.
+                </div>
+              </Box>
+            </div>}
+          </div>
+        </div>
+
+        {selStu&&<StudentModal student={selStu} logs={logs} onClose={()=>setSelStu(null)} onEdit={s=>{setSelStu(null);setEditStu(s);}}/>}
+        {editStu&&<EditStudentModal student={editStu} onClose={()=>setEditStu(null)} onSave={updated=>{setStudents(p=>p.map(s=>s.id===updated.id?updated:s));setEditStu(null);say(`${updated.name} updated successfully`,"success");}}/>}
+        {addStu&&<AddStudentModal students={students} onClose={()=>setAddStu(false)} onSave={s=>{setStudents(p=>[...p,s]);setAddStu(false);say(`${s.name} registered`,"success");}}/>}
+        {editAdm&&<EditAdminModal admin={editAdm} onClose={()=>setEditAdm(null)} onSave={updated=>{setAdmins(p=>p.map(a=>a.id===updated.id?updated:a));setEditAdm(null);say(`${updated.name} updated`,"success");}}/>}
+        {addAdm&&<AddAdminModal onClose={()=>setAddAdm(false)} onSave={a=>{setAdmins(p=>[...p,a]);setAddAdm(false);say(`${a.name} account created`,"success");}}/>}
+        {toast&&<Toast msg={toast.msg} type={toast.type} onClose={()=>setToast(null)}/>}
+      </div>;
+    }
+
+    function App() {
+      const [students,setStudents]=useState(REGISTRY);
+      const [admins,setAdmins]=useState(INITIAL_ADMINS);
+      const [logs,setLogs]=useState([]);
+      const [view,setView]=useState("checkin");
+      const [admin,setAdmin]=useState(null);
+      const addLog=useCallback(e=>setLogs(p=>[e,...p]),[]);
+      return <>
+        <style>{G}</style>
+        {view==="checkin"&&<CheckIn students={students} logs={logs} onLog={addLog} goAdmin={()=>setView("login")}/>}
+        {view==="login"&&<AdminLogin admins={admins} onLogin={a=>{setAdmin(a);setView("dash");}} onBack={()=>setView("checkin")}/>}
+        {view==="dash"&&admin&&<Dashboard admin={admin} students={students} setStudents={setStudents} admins={admins} setAdmins={setAdmins} logs={logs} setLogs={setLogs}/>}
+      </>;
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
